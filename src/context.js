@@ -29,12 +29,11 @@ const AppProvider = ({ children }) => {
     const response = await fetch(url)
     const data = await response.json()
     dispatch({ type: SET_STORIES, payload: { hits: data.hits, nbPages: data.nbPages } })
-    console.log(data)
   }
 
   useEffect(() => {
     fetchStories(`${API_ENDPOINT}query=${state.query}&page=${state.page}`)
-  }, [state.query])
+  }, [state.query, state.page])
 
   const removeStory = (id) => {
     dispatch({ type: REMOVE_STORY, payload: id })
@@ -45,7 +44,12 @@ const AppProvider = ({ children }) => {
     dispatch({ type: HANDLE_SEARCH, payload: query })
   }
 
-  return <AppContext.Provider value={{ ...state, removeStory, handleSearch }}>{children}</AppContext.Provider>
+  const handlePage = (value) => {
+    dispatch({ type: HANDLE_PAGE, payload: value })
+    console.log(value)
+  }
+
+  return <AppContext.Provider value={{ ...state, removeStory, handleSearch, handlePage }}>{children}</AppContext.Provider>
 }
 // make sure use
 export const useGlobalContext = () => {
